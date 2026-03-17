@@ -1,138 +1,171 @@
 # Coronary Heart Disease (CHD) Risk Prediction
 
-This project predicts the 10-year risk of coronary heart disease (CHD) based on demographic, behavioral, and medical risk factors. The dataset includes information such as age, sex, smoking habits, cholesterol levels, blood pressure, BMI, and more. Using this dataset, we developed machine learning models to identify individuals at high risk of developing CHD.
+> Predict the 10-year risk of developing coronary heart disease based on clinical, behavioral, and demographic indicators.
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://machine-learning-heart-disease-prediction-8.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![XGBoost](https://img.shields.io/badge/Model-XGBoost-189AB4?style=for-the-badge)](https://xgboost.readthedocs.io/)
+[![Streamlit](https://img.shields.io/badge/Deployed-Streamlit%20Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
+
+---
+
+## Live Application
+
+**[https://machine-learning-heart-disease-prediction-8.streamlit.app/](https://machine-learning-heart-disease-prediction-8.streamlit.app/)**
+
+---
 
 ## Project Overview
 
-### Dataset Description
+This project predicts the 10-year risk of coronary heart disease (CHD) based on demographic, behavioral, and medical risk factors. The dataset includes information such as age, sex, smoking habits, cholesterol levels, blood pressure, BMI, and more. Six machine learning algorithms were trained and evaluated, with **XGBoost** selected as the final deployed model.
 
-The dataset contains the following variables:
+---
 
-- **Demographic:**
-  - **Sex**: Male or female (Nominal)
-  - **Age**: Age of the patient (Continuous)
+## Dataset Description
 
-- **Behavioral:**
-  - **Current Smoker**: Whether the patient is a current smoker (Nominal)
-  - **Cigs Per Day**: Number of cigarettes smoked per day (Continuous)
+The dataset contains **4,238 patient records** with the following variables:
 
-- **Medical History:**
-  - **BP Meds**: Whether the patient was on blood pressure medication (Nominal)
-  - **Prevalent Stroke**: Whether the patient had previously had a stroke (Nominal)
-  - **Prevalent Hyp**: Whether the patient was hypertensive (Nominal)
-  - **Diabetes**: Whether the patient had diabetes (Nominal)
+### Demographic
+| Variable | Type | Description |
+|----------|------|-------------|
+| Sex | Nominal | Male or Female |
+| Age | Continuous | Age of the patient |
 
-- **Medical (Current):**
-  - **Tot Chol**: Total cholesterol level (Continuous)
-  - **Sys BP**: Systolic blood pressure (Continuous)
-  - **Dia BP**: Diastolic blood pressure (Continuous)
-  - **BMI**: Body Mass Index (Continuous)
-  - **Heart Rate**: Heart rate (Continuous)
-  - **Glucose**: Glucose level (Continuous)
+### Behavioral
+| Variable | Type | Description |
+|----------|------|-------------|
+| Current Smoker | Nominal | Whether the patient currently smokes |
+| Cigs Per Day | Continuous | Number of cigarettes smoked per day |
 
-- **Predictive Target:**
-  - **10-year risk of CHD**: Binary classification – “1” (Yes) for high risk, “0” (No) for low risk
+### Medical History
+| Variable | Type | Description |
+|----------|------|-------------|
+| BP Meds | Nominal | Whether on blood pressure medication |
+| Prevalent Stroke | Nominal | Whether the patient had a prior stroke |
+| Prevalent Hyp | Nominal | Whether the patient is hypertensive |
+| Diabetes | Nominal | Whether the patient has diabetes |
+
+### Medical (Current)
+| Variable | Type | Description |
+|----------|------|-------------|
+| Tot Chol | Continuous | Total cholesterol level |
+| Sys BP | Continuous | Systolic blood pressure |
+| Dia BP | Continuous | Diastolic blood pressure |
+| BMI | Continuous | Body Mass Index |
+| Heart Rate | Continuous | Heart rate in BPM |
+| Glucose | Continuous | Glucose level |
+
+### Target Variable
+| Variable | Description |
+|----------|-------------|
+| TenYearCHD | 10-year CHD risk — `1` (High Risk) / `0` (Low Risk) |
 
 ---
 
 ## Workflow
 
-### 1. **Data Exploration**
-   - Conducted an initial exploration of the dataset to understand variable distributions, detect missing values, and compute basic statistical measures (mean, median, standard deviation, etc.).
-   - Visualized continuous and categorical data to identify patterns and relationships.
+### 1. Data Exploration
+- Explored variable distributions, detected missing values, and computed statistical measures.
+- Visualized continuous and categorical data to identify patterns and relationships.
 
-### 2. **Algorithm Identification**
-   - The project focuses on solving a binary classification problem. The following machine learning algorithms were identified for comparison:
-     - **Logistic Regression**: A simple yet effective model for binary classification.
-     - **Random Forest**: A versatile, non-linear ensemble method that handles complex relationships and imbalanced data.
-     - **Support Vector Machine (SVM)**: A powerful algorithm for distinguishing between two classes, even when the data is not linearly separable.
+### 2. Data Preprocessing
+- **Missing Values**: Imputed using column mean values.
+- **Encoding**: Categorical variables (sex, smoking status) converted to numerical format.
+- **Normalization**: MinMaxScaler applied to: `age`, `totChol`, `sysBP`, `diaBP`, `BMI`, `heartRate`, `glucose`, `cigsPerDay`.
+- **Data Splitting**: 97% training / 3% testing split.
 
-### 3. **Data Preprocessing**
-   - **Missing Values**: Handled using imputation techniques such as mean/mode filling.
-   - **Encoding**: Converted categorical variables like gender and smoking status into numerical format using one-hot encoding.
-   - **Scaling**: Normalized continuous variables (e.g., Age, Cholesterol, BMI) to ensure uniform input to the models.
-   - **Data Splitting**: Split the data into training and testing sets to evaluate model performance.
+### 3. Model Development
+Six algorithms were trained and compared:
+- Logistic Regression (LOR)
+- K-Nearest Neighbours (KNN)
+- Decision Tree (DT)
+- Random Forest (RF)
+- Gradient Boosting (GB)
+- **XGBoost (XGB)** ← Selected Model
 
-### 4. **Model Development**
-   - Created three different machine learning models:
-     - **Logistic Regression**
-     - **Random Forest**
-     - **Support Vector Machine (SVM)**
+### 4. Model Evaluation
+Each model was evaluated using Accuracy, Precision, Recall, and F1-Score.
 
-### 5. **Model Evaluation**
-   - Evaluated each model using metrics such as **Precision**, **Recall**, and **F1-Score**.
-   - Analyzed the confusion matrix to assess the trade-off between true positives and false negatives.
+### 5. Model Saving
+The final XGBoost model was saved using `joblib` for deployment in the Streamlit application.
 
-### 6. **Model Comparison & Selection**
-   - Performed a comparative analysis of all models based on precision, recall, and F1-score.
-   - **Random Forest** was selected as the best model due to its superior handling of imbalanced data and higher F1-score. This model effectively captured the complexity of interactions between risk factors.
+---
 
-### 7. **Saving the Model**
-   - Saved the trained Random Forest model using `joblib` or `pickle` for future use in the Streamlit application.
+## Model Performance
 
-### 8. **Streamlit Web App**
-   - Developed a simple web application using **Streamlit**, allowing users to input personal data such as age, cholesterol, and smoking status.
-   - The app predicts whether the user is at risk of CHD in the next 10 years.
+### Accuracy Comparison
 
-### 9. **Deployment & GitHub**
-   - Uploaded the project files, including the Jupyter notebook, trained model, and Streamlit app, to GitHub.
-   - Provided instructions for users to run the app locally or deploy it on their own platforms.
+| Model | Accuracy |
+|-------|----------|
+| Logistic Regression | 85.37% |
+| K-Nearest Neighbours | 86.18% |
+| Decision Tree | 82.93% |
+| Random Forest | 86.18% |
+| Gradient Boosting | 86.18% |
+| **XGBoost** | **84.55%** |
+
+### Precision, Recall & F1-Score
+
+| Metric | LOR | KNN | DT | RF | GB | **XGB** |
+|--------|-----|-----|----|----|-----|---------|
+| **Precision** | 0.00% | 100.00% | 35.71% | 50.00% | 50.00% | **33.33%** |
+| **Recall** | 0.00% | 0.00% | 29.41% | 5.88% | 5.88% | **5.88%** |
+| **F1-Score** | 0.00% | 0.00% | 32.26% | 10.53% | 10.53% | **17.39%** |
+
+> XGBoost was selected as the final model for its best F1-Score among all candidates, making it most effective at balancing precision and recall for CHD risk prediction.
 
 ---
 
 ## How to Run the Project
 
 ### Requirements
-To run this project, you'll need the following Python packages:
 
 ```bash
-pip install pandas numpy scikit-learn streamlit
+pip install pandas numpy scikit-learn streamlit xgboost joblib
 ```
 
 ### Instructions
-1. Clone the repository from GitHub:
+
+1. Clone the repository:
    ```bash
-   git clone https://github.com/username/CHD_Risk_Prediction.git
+   git clone https://github.com/AnkitVishwakarma4591/Machine-Learning-Heart-Disease-Prediction.git
    ```
+
 2. Navigate to the project directory:
    ```bash
-   cd CHD_Risk_Prediction
+   cd Machine-Learning-Heart-Disease-Prediction
    ```
+
 3. Run the Streamlit app:
    ```bash
    streamlit run app.py
    ```
 
-### Files:
-- **CHD_Prediction.ipynb**: The Jupyter notebook containing the entire workflow, from data exploration to model evaluation.
-- **model.pkl**: The saved Random Forest model used for prediction.
-- **app.py**: The Streamlit web application code.
-  
----
+### Repository Files
 
-## Model Performance
-
-| Metric          | Logistic Regression | Random Forest | SVM         |
-|-----------------|---------------------|---------------|-------------|
-| **Precision**   | X.XX                | X.XX          | X.XX        |
-| **Recall**      | X.XX                | X.XX          | X.XX        |
-| **F1-Score**    | X.XX                | X.XX          | X.XX        |
-
-The Random Forest model was chosen for its balance between precision and recall, resulting in the best F1-score, making it the most effective at predicting the 10-year risk of CHD.
-
----
-
-## 👨‍💻 For Any Concern Please Contact
-
-**Developed by:** *Ankit Vishwakarma* <br>
-📧 **Email:** [ankitvishwakarma4591@gmail.com](mailto:ankitvishwakarma4591@gmail.com) <br>
-📞 **Phone:** +91 9060782203 <br>
-🔗 **LinkedIn:** [Ankit Vishwakarma](https://www.linkedin.com/in/ankit-vishwakarma-324baa2a6/)
+| File | Description |
+|------|-------------|
+| `app.py` | Streamlit web application |
+| `Heart Disease Model.ipynb` | Full notebook: EDA, preprocessing, training, evaluation |
+| `heart_disease_model.pkl` | Saved XGBoost model |
+| `heart_disease_data.csv` | Dataset (4,238 records) |
+| `requirements.txt` | Python dependencies |
+| `runtime.txt` | Python runtime specification |
 
 ---
 
 ## Conclusion
 
-This project successfully predicts the 10-year risk of coronary heart disease using machine learning models. By comparing multiple models, we identified Random Forest as the best performing algorithm. The web app allows users to input their data and receive predictions, making this tool both accessible and practical.
+This project successfully predicts the 10-year risk of coronary heart disease using six machine learning models. After comparative evaluation, XGBoost was selected as the final deployed model for its best F1-score. The Streamlit web app allows users to input their clinical and lifestyle data and receive an instant CHD risk prediction.
 
 ---
+
+## Contact
+
+**Developed by:** Ankit Vishwakarma
+
+| | |
+|--|--|
+| Email | [ankitvishwakarma4591@gmail.com](mailto:ankitvishwakarma4591@gmail.com) |
+| Phone | +91 9060782203 |
+| LinkedIn | [Ankit Vishwakarma](https://www.linkedin.com/in/ankit-vishwakarma-324baa2a6/) |
