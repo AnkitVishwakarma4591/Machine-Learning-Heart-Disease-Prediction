@@ -2,10 +2,8 @@ import numpy as np
 import joblib
 import streamlit as st
 
-# ── Page config ─────────────────────────────────────────────────────────────
 st.set_page_config(page_title="CHD Risk Predictor", layout="centered")
 
-# ── Stunning CSS ─────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -27,87 +25,68 @@ html, body, [data-testid="stAppViewContainer"] {
 
 [data-testid="stHeader"] { background: transparent !important; }
 [data-testid="stToolbar"] { display: none !important; }
-.block-container { max-width: 780px !important; padding: 2.5rem 2rem 4rem !important; }
+.block-container { max-width: 800px !important; padding: 2.5rem 2rem 4rem !important; }
 
-/* ── Hero header ── */
+/* ── Hero ── */
 .hero {
     text-align: center;
-    padding: 2.8rem 1rem 2rem;
-    position: relative;
+    padding: 2.4rem 1rem 1.8rem;
 }
 .hero-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 72px; height: 72px;
+    width: 70px; height: 70px;
     background: linear-gradient(135deg, #c0392b, #e74c3c);
     border-radius: 20px;
-    margin: 0 auto 1.4rem;
-    box-shadow: 0 8px 32px rgba(231,76,60,0.45), 0 2px 8px rgba(0,0,0,0.4);
+    margin: 0 auto 1.3rem;
+    box-shadow: 0 8px 32px rgba(231,76,60,0.45);
 }
 .hero h1 {
     font-family: 'DM Serif Display', serif;
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     color: #f5f0eb;
     letter-spacing: -0.02em;
     line-height: 1.15;
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.5rem;
 }
-.hero p {
-    color: #8a94a8;
-    font-size: 0.97rem;
-    font-weight: 300;
-    letter-spacing: 0.01em;
-}
+.hero p { color: #8a94a8; font-size: 0.95rem; font-weight: 300; }
 
 /* ── Divider ── */
 .styled-divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(231,76,60,0.4), rgba(192,57,43,0.6), rgba(231,76,60,0.4), transparent);
-    margin: 1.8rem 0;
+    margin: 1.6rem 0;
 }
 
-/* ── Section labels ── */
+/* ── Section label ── */
 .section-label {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #c0392b;
-    margin-bottom: 1rem;
+    margin: 1.6rem 0 0.7rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 .section-label::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(192,57,43,0.25);
-}
-
-/* ── Input cards ── */
-.input-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1rem;
-    backdrop-filter: blur(8px);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.input-card:hover {
-    border-color: rgba(192,57,43,0.35);
-    box-shadow: 0 4px 24px rgba(192,57,43,0.08);
+    background: rgba(192,57,43,0.22);
 }
 
 /* ── Streamlit widget overrides ── */
-label, .stSelectbox label, .stNumberInput label {
+label,
+.stSelectbox label,
+.stNumberInput label {
     color: #b0bac8 !important;
-    font-size: 0.82rem !important;
+    font-size: 0.81rem !important;
     font-weight: 500 !important;
     letter-spacing: 0.03em !important;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.25rem !important;
 }
 
 [data-testid="stNumberInput"] input,
@@ -118,18 +97,14 @@ label, .stSelectbox label, .stNumberInput label {
     color: #f0eae4 !important;
     font-family: 'DM Sans', sans-serif !important;
     font-size: 0.95rem !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
 }
-
-[data-testid="stNumberInput"] input:focus,
-[data-testid="stSelectbox"] > div > div:focus-within {
+[data-testid="stNumberInput"] input:focus {
     border-color: rgba(192,57,43,0.6) !important;
     box-shadow: 0 0 0 3px rgba(192,57,43,0.15) !important;
     outline: none !important;
 }
-
 [data-testid="stSelectbox"] svg { color: #8a94a8 !important; }
-
 [data-testid="stNumberInput"] button {
     background: rgba(255,255,255,0.05) !important;
     border: 1px solid rgba(255,255,255,0.08) !important;
@@ -140,25 +115,22 @@ label, .stSelectbox label, .stNumberInput label {
 /* ── Predict button ── */
 .stButton > button {
     width: 100% !important;
-    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 50%, #c0392b 100%) !important;
-    background-size: 200% 100% !important;
+    background: linear-gradient(135deg, #c0392b, #e74c3c) !important;
     color: #fff !important;
     font-family: 'DM Sans', sans-serif !important;
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
     font-weight: 600 !important;
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
     border: none !important;
     border-radius: 12px !important;
     padding: 0.85rem 2rem !important;
     height: auto !important;
-    cursor: pointer !important;
-    box-shadow: 0 4px 20px rgba(192,57,43,0.4), 0 1px 4px rgba(0,0,0,0.3) !important;
-    transition: background-position 0.4s ease, box-shadow 0.3s ease, transform 0.15s ease !important;
+    box-shadow: 0 4px 20px rgba(192,57,43,0.4) !important;
+    transition: box-shadow 0.3s, transform 0.15s !important;
 }
 .stButton > button:hover {
-    background-position: right center !important;
-    box-shadow: 0 8px 32px rgba(192,57,43,0.55), 0 2px 8px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 8px 32px rgba(192,57,43,0.55) !important;
     transform: translateY(-1px) !important;
 }
 .stButton > button:active { transform: translateY(0) !important; }
@@ -167,7 +139,7 @@ label, .stSelectbox label, .stNumberInput label {
 .result-box {
     border-radius: 14px;
     padding: 1.6rem 1.8rem;
-    margin-top: 1.6rem;
+    margin-top: 1.4rem;
     display: flex;
     align-items: flex-start;
     gap: 1rem;
@@ -190,37 +162,32 @@ label, .stSelectbox label, .stNumberInput label {
     margin-bottom: 0.3rem;
 }
 .result-high .result-title { color: #e74c3c; }
-.result-low .result-title { color: #2ecc71; }
-.result-desc { color: #8a94a8; font-size: 0.88rem; line-height: 1.55; }
+.result-low  .result-title { color: #2ecc71; }
+.result-desc { color: #8a94a8; font-size: 0.87rem; line-height: 1.55; }
 
 /* ── Probability bar ── */
-.prob-wrap { margin-top: 1.2rem; }
+.prob-wrap { margin-top: 1.1rem; }
 .prob-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: #8a94a8;
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.4rem;
     font-weight: 500;
 }
 .prob-track {
-    height: 8px;
+    height: 7px;
     background: rgba(255,255,255,0.07);
     border-radius: 99px;
     overflow: hidden;
 }
-.prob-fill {
-    height: 100%;
-    border-radius: 99px;
-    transition: width 1s cubic-bezier(0.16,1,0.3,1);
-    animation: fillBar 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
-}
+.prob-fill { height: 100%; border-radius: 99px; }
 .prob-high { background: linear-gradient(90deg, #c0392b, #e74c3c); }
 .prob-low  { background: linear-gradient(90deg, #27ae60, #2ecc71); }
 
 /* ── Disclaimer ── */
 .disclaimer {
-    margin-top: 1.6rem;
+    margin-top: 1.4rem;
     padding: 1rem 1.2rem;
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.06);
@@ -229,47 +196,41 @@ label, .stSelectbox label, .stNumberInput label {
     gap: 0.7rem;
     align-items: flex-start;
 }
-.disclaimer p { color: #6b7585; font-size: 0.78rem; line-height: 1.55; }
+.disclaimer p { color: #6b7585; font-size: 0.77rem; line-height: 1.55; }
 
-/* ── Animations ── */
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fillBar {
-    from { width: 0%; }
+    from { opacity:0; transform:translateY(14px); }
+    to   { opacity:1; transform:translateY(0); }
 }
 
-/* ── Hide Streamlit branding ── */
 #MainMenu, footer, [data-testid="stStatusWidget"] { display: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Load model ──────────────────────────────────────────────────────────────
+# ── Load model ───────────────────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
     return joblib.load("heart_disease_model.pkl")
 
 loaded_model = load_model()
 
-# ── Hero ────────────────────────────────────────────────────────────────────
+# ── Hero ─────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
   <div class="hero-icon">
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.772 3.772 1 7.191 1c1.947 0 3.735.995 4.809 2.5C13.074 1.995 14.862 1 16.809 1 20.228 1 23 3.772 23 7.191c0 4.105-5.37 8.863-11 14.402z"
         fill="rgba(255,255,255,0.95)"/>
     </svg>
   </div>
   <h1>Coronary Heart Disease<br>Risk Predictor</h1>
-  <p>Assess your 10-year CHD risk based on clinical & lifestyle indicators</p>
+  <p>Assess your 10-year CHD risk based on clinical &amp; lifestyle indicators</p>
 </div>
 <div class="styled-divider"></div>
 """, unsafe_allow_html=True)
 
-# ── Inputs ──────────────────────────────────────────────────────────────────
+# ── Personal Information ──────────────────────────────────────────────────────
 st.markdown('<div class="section-label">Personal Information</div>', unsafe_allow_html=True)
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1:
     age = st.number_input("Age", min_value=1, max_value=120, value=40)
@@ -277,19 +238,17 @@ with col2:
     sex = st.selectbox("Sex", ("Male", "Female"))
 with col3:
     bmi = st.number_input("BMI", min_value=1.0, max_value=70.0, value=25.0)
-st.markdown('</div>', unsafe_allow_html=True)
 
+# ── Smoking Habits ────────────────────────────────────────────────────────────
 st.markdown('<div class="section-label">Smoking Habits</div>', unsafe_allow_html=True)
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     current_smoker = st.selectbox("Current Smoker", ("No", "Yes"))
 with col2:
     cigsPerDay = st.number_input("Cigarettes per Day", min_value=0, max_value=100, value=0)
-st.markdown('</div>', unsafe_allow_html=True)
 
+# ── Cardiovascular Measurements ───────────────────────────────────────────────
 st.markdown('<div class="section-label">Cardiovascular Measurements</div>', unsafe_allow_html=True)
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1:
     heart_rate = st.number_input("Heart Rate (BPM)", min_value=1, max_value=250, value=75)
@@ -297,19 +256,17 @@ with col2:
     sysBP = st.number_input("Systolic BP", min_value=1.0, max_value=300.0, value=120.0)
 with col3:
     diaBP = st.number_input("Diastolic BP", min_value=1.0, max_value=200.0, value=80.0)
-st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="section-label">Blood & Metabolic Panel</div>', unsafe_allow_html=True)
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
+# ── Blood & Metabolic Panel ───────────────────────────────────────────────────
+st.markdown('<div class="section-label">Blood &amp; Metabolic Panel</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     totChol = st.number_input("Total Cholesterol", min_value=1.0, max_value=700.0, value=200.0)
 with col2:
     glucose = st.number_input("Glucose Level", min_value=1.0, max_value=500.0, value=80.0)
-st.markdown('</div>', unsafe_allow_html=True)
 
+# ── Medical History ───────────────────────────────────────────────────────────
 st.markdown('<div class="section-label">Medical History</div>', unsafe_allow_html=True)
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     BPMeds = st.selectbox("BP Medication", ("No", "Yes"))
@@ -319,21 +276,16 @@ with col3:
     prevalentHyp = st.selectbox("Hypertensive", ("No", "Yes"))
 with col4:
     diabetes = st.selectbox("Diabetes", ("No", "Yes"))
-st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="styled-divider"></div>', unsafe_allow_html=True)
 
-# ── Predict ─────────────────────────────────────────────────────────────────
+# ── Predict ───────────────────────────────────────────────────────────────────
 X_new = np.array([[
     age / 75,
     1 if sex == "Male" else 0,
     bmi,
     1 if current_smoker == "Yes" else 0,
-    heart_rate,
-    sysBP,
-    diaBP,
-    totChol,
-    cigsPerDay,
+    heart_rate, sysBP, diaBP, totChol, cigsPerDay,
     1 if BPMeds == "Yes" else 0,
     1 if prevalentStroke == "Yes" else 0,
     1 if prevalentHyp == "Yes" else 0,
@@ -355,7 +307,7 @@ if st.button("PREDICT MY RISK"):
               <circle cx="12" cy="16.5" r="1" fill="#e74c3c"/>
             </svg>
           </div>
-          <div>
+          <div style="flex:1">
             <div class="result-title">High Risk Detected</div>
             <div class="result-desc">Based on the indicators provided, there is an elevated probability of developing coronary heart disease within the next 10 years. Please consult a cardiologist.</div>
             <div class="prob-wrap">
@@ -374,7 +326,7 @@ if st.button("PREDICT MY RISK"):
               <path d="M7.5 12.5l3 3 6-6" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <div>
+          <div style="flex:1">
             <div class="result-title">Low Risk</div>
             <div class="result-desc">Your current indicators suggest a low likelihood of developing coronary heart disease within the next 10 years. Maintain a healthy lifestyle.</div>
             <div class="prob-wrap">
@@ -387,11 +339,11 @@ if st.button("PREDICT MY RISK"):
 
     st.markdown("""
     <div class="disclaimer">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px" xmlns="http://www.w3.org/2000/svg">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="11" stroke="#4a5568" stroke-width="1.5"/>
         <path d="M12 8v5" stroke="#4a5568" stroke-width="2" stroke-linecap="round"/>
         <circle cx="12" cy="15.5" r="1" fill="#4a5568"/>
       </svg>
-      <p>This tool is intended for informational purposes only and does not constitute medical advice, diagnosis, or treatment. Always seek the guidance of a qualified healthcare provider with any questions regarding a medical condition.</p>
+      <p>This tool is for informational purposes only and does not constitute medical advice, diagnosis, or treatment. Always seek guidance from a qualified healthcare provider.</p>
     </div>
     """, unsafe_allow_html=True)
